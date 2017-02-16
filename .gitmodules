@@ -1,0 +1,3 @@
+[submodule "ncursescpp"]
+	path = ncursescpp
+	url = https://github.com/Praetonus/Ncursescpp.git
