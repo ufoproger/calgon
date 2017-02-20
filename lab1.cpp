@@ -364,7 +364,9 @@ int main(int argc, char *argv[])
 	}
 
 	if (isOnlyRaw)
+	{
 		std::cout << solutions << std::endl;
+	}
 	else
 		displaySolutions(a, solutions);
 
