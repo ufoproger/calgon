@@ -53,7 +53,9 @@ matrix readMatrixFromFile(const std::string &filename)
 		{
 			uint32_t t;
 
-			fin >> t;
+			if (!(fin >> t))
+				return matrix();
+
 			a[i].push_back((bool)t);
 		}
 
@@ -309,7 +311,7 @@ int main(int argc, char *argv[])
 	std::string filename;
 	bool isRandom;
 	bool help;
-	bool isOnlyOutput;
+	bool isOnlyOutput, isOnlyRaw;
 	uint32_t n, m;
 	Flags flags;
 
@@ -319,6 +321,7 @@ int main(int argc, char *argv[])
 	flags.Var(m, 'm', "resources", uint32_t(7), "Количество ресурсов", "Случайная матрица");
 
 	flags.Bool(isOnlyOutput, 'o', "output", "Вывести подготовленную матрицу и выйти", "Отладка");
+	flags.Bool(isOnlyRaw, 'R', "raw", "Вывести сырой результат и выйти", "Отладка");
 	flags.Bool(help, 'h', "help", "Показать помощь и выйти");
 
     if (!flags.Parse(argc, argv))
@@ -360,7 +363,10 @@ int main(int argc, char *argv[])
 		return 3;
 	}
 
-	displaySolutions(a, solutions);
+	if (isOnlyRaw)
+		std::cout << solutions << std::endl;
+	else
+		displaySolutions(a, solutions);
 
 	return 0;
 }
