@@ -213,11 +213,13 @@ void displaySolutions(const matrix &a, const matrix& solutions)
 		{
 			case KEY_UP:
 			case KEY_LEFT:
+			case 'a':
 				--index;
 				break;
 
 			case KEY_DOWN:
 			case KEY_RIGHT:
+			case 'd':
 				++index;
 				break;
 
