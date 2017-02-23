@@ -48,8 +48,8 @@ matrix readMatrixFromFile(const std::string &filename)
 
 	a.resize(n);
 
-	for (int i = 0; i < n; ++i)
-		for (int j = 0; j < m; ++j)
+	for (size_t i = 0; i < n; ++i)
+		for (size_t j = 0; j < m; ++j)
 		{
 			uint32_t t;
 
@@ -72,11 +72,11 @@ matrix generateRandomMatrix(uint32_t n, uint32_t m)
 	a.resize(n);
 	srand(time(0));
 
-	for (int i = 0; i < n; ++i)
+	for (size_t i = 0; i < n; ++i)
 	{
 		uint32_t sum = 0;
 
-		for (int j = 0; j < m; ++j)
+		for (size_t j = 0; j < m; ++j)
 		{
 			// Увеличиваем вероятность того, что проекту не нужен конкретный ресурс
 			uint32_t t = (bool)!(rand() % 4);
@@ -145,9 +145,9 @@ matrix solveMatrix(const matrix &a)
 		std::vector < bool > x(m, false);
 		bool isSuitable = true;
 
-		for (int i = 0; (i < n) && isSuitable; ++i)
+		for (size_t i = 0; (i < n) && isSuitable; ++i)
 		{
-			for (int j = 0; (j < m) && isSuitable; ++j)
+			for (size_t j = 0; (j < m) && isSuitable; ++j)
 				if (code[i] && a[i][j])
 				{
 					if (x[j])
@@ -193,8 +193,8 @@ void displaySolutions(const matrix &a, const matrix& solutions)
 
 	const int tableY = 5;
 	const int tableX = 5;
-	const int n = a.size();
-	const int m = a.front().size();
+	const size_t n = a.size();
+	const size_t m = a.front().size();
 
 	int index = 0;
 
@@ -243,7 +243,7 @@ void displaySolutions(const matrix &a, const matrix& solutions)
 
 		bool isFirstProject = true;
 
-		for (int i = 0; i < n; ++i)
+		for (size_t i = 0; i < n; ++i)
 			if (solutions[index][i])
 			{
 				if (!isFirstProject)
@@ -258,22 +258,22 @@ void displaySolutions(const matrix &a, const matrix& solutions)
 
 		int resourcesCount = 0;
 
-		for (int i = 0; i < n; ++i)
+		for (size_t i = 0; i < n; ++i)
 		{
 			if (!solutions[index][i])
 				continue;
 
-			for (int j = 0; j < m; ++j)
+			for (size_t j = 0; j < m; ++j)
 				resourcesCount += (int)a[i][j];
 		}
 
 		printw("Количество задействованных ресурсов: %d из %d.", resourcesCount, m);
 		mvaddstr(tableY - 1, 0, "S \\ R");
 
-		for (int j = 0; j < m; ++j)
+		for (size_t j = 0; j < m; ++j)
 			mvprintw(tableY - 1, tableX + 3 * j, "%3d", j + 1);
 
-		for (int i = 0; i < n; ++i)
+		for (size_t i = 0; i < n; ++i)
 		{
 			if (solutions[index][i])
 			{
@@ -285,8 +285,8 @@ void displaySolutions(const matrix &a, const matrix& solutions)
 			attrset(A_NORMAL);
 		}
 
-		for (int i = 0; i < n; ++i)
-			for (int j = 0; j < m; ++j)
+		for (size_t i = 0; i < n; ++i)
+			for (size_t j = 0; j < m; ++j)
 				if (a[i][j])
 				{
 					if (solutions[index][i])
