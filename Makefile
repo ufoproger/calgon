@@ -1,4 +1,4 @@
-CXXFLAGS=-Wall -Werror -g -std=c++0x
+CXXFLAGS=-Wall -g -std=c++0x
 # -Wmultichar
 
 lab1: lab1.cpp
