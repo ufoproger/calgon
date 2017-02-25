@@ -1,7 +1,6 @@
 #include <numeric>
 #include <iostream>
 #include <fstream>
-#include <vector>
 #include <string>
 #include <utility>
 #include <cmath>
@@ -9,29 +8,10 @@
 #include <ncurses.h>
 
 #include "flags.hh/Flags.hh"
+#include "lab2_types.hh"
 
-typedef std::vector < std::vector < bool > > matrix;
-typedef std::vector < std::vector < uint32_t > > solutions;
-typedef std::vector < size_t > v;
-typedef std::vector < v > vv;
 typedef std::pair < int , int > point;
 typedef std::vector < point > points;
-
-std::ostream& operator<<(std::ostream &out, const v &v)
-{
-	for (auto value: v)
-		out << (value + 1) << " ";
-
-	return out;
-}
-
-std::ostream& operator<<(std::ostream &out, const vv &a)
-{
-	for (auto v: a)
-		out << v << ::std::endl;
-
-	return out;
-}
 
 std::ostream& operator<<(std::ostream &out, const point &p)
 {
@@ -59,11 +39,14 @@ vv algo_cnk(size_t n, size_t k)
 	for (size_t i = 0; i < k; ++i)
 		a.push_back(i);
 
+	if (n == k)
+		return vv(1, a);
+
 	for (int p = (int)k - 1;;)
 	{
 		result.push_back(a);
 
-		if (a.back() + 1 == n)
+		if (a.back() + 1 >= n)
 			--p;
 		else
 			p = k - 1;
@@ -192,7 +175,6 @@ void displaySolutions(const points &points, const vv &solutions)
 	start_color();
 	init_pair(1, COLOR_RED, COLOR_BLACK);
 
-	const size_t n = points.size();
 	int index = 0;
 
 	keypad(stdscr, TRUE);
@@ -241,11 +223,52 @@ void displaySolutions(const points &points, const vv &solutions)
 		clear();
 		mvprintw(0, 0, "Вывод решения %d из %d:", index + 1, solutions.size());
 
-		mvvline(3, gridX, 0, gridY - 3);
+		// Ось абсцисс
 		mvhline(gridY, gridX, 0, column - gridX);
-		mvaddch(gridY, gridX, ACS_LLCORNER);
-		mvaddch(3, gridX, ACS_UARROW);
+		mvaddch(2, gridX, ACS_UARROW);
+
+		// Ось ординат
+		mvvline(3, gridX, 0, gridY - 3);
 		mvaddch(gridY, column - 1, ACS_RARROW);
+
+		// Начало осей координат
+		mvaddch(gridY, gridX, ACS_LLCORNER);
+		mvaddch(gridY + 1, gridX - 2, '0');
+
+		// Нумеруем ось ординат
+		for (int i = 1; i < column - gridX - 1; ++i)
+		{
+			bool mark = false;
+
+			if (i <= 10)
+			{
+				if (i % 2)
+				{
+					mvprintw(gridY + 1, gridX + i, "%d", i);
+					mark = true;
+				}
+			}
+			else
+			{
+				if (i % 5 == 0)
+				{
+					mvprintw(gridY + 1, gridX + i - 1, "%2d", i);
+					mark = true;
+				}
+			}
+
+
+
+			if (mark)
+				mvaddch(gridY, gridX + i, ACS_TTEE);
+		}
+
+		// Нумеруем ось ординат
+		for (int i = gridY - 1; i > 2; --i)
+		{
+			mvprintw(i, 0, "%3d", gridY - i);
+			mvaddch(i, gridX, ACS_RTEE);
+		}
 
 		v solution = solutions[index];
 		point p1 = points[solution[0]];
@@ -271,41 +294,6 @@ void displaySolutions(const points &points, const vv &solutions)
 			attrset(A_NORMAL);
 		}
 
-	/*	int resourcesCount = 0;
-
-		for (size_t i = 0; i < n; ++i)
-		{
-			if (!solutions[index][i])
-				continue;
-
-			for (size_t j = 0; j < m; ++j)
-				resourcesCount += (int)a[i][j];
-		}
-*/
-		// printw("Количество задействованных ресурсов: %d из %d.", resourcesCount, m);
-		// mvaddstr(tableY - 1, 0, "S \\ R");
-/*
-		for (size_t j = 0; j < m; ++j)
-			mvprintw(tableY - 1, tableX + 3 * j, "%3d", j + 1);
-
-		for (size_t i = 0; i < n; ++i)
-		{
-			if (solutions[index][i])
-			{
-				attrset(A_BOLD);
-				attron(COLOR_PAIR(1));
-			}
-
-			mvprintw(tableY + i, 0, "%2d", i + 1);
-			attrset(A_NORMAL);
-		}
-
-		for (size_t i = 0; i < n; ++i)
-			for (size_t j = 0; j < m; ++j)
-				if (a[i][j])
-				{
-				}
-*/
 		mvaddstr(row - 1, 0, "Для перехода между решениями используйте кнопки со стрелками; для выхода нажмите Q.");
 		ch = getch();
 	}
@@ -324,13 +312,13 @@ int main(int argc, char *argv[])
 
 	flags.Var(filename, 'f', "filename", std::string(), "Файл, содержащий список точек", "Список точек из файла");
 	flags.Bool(random, 'r', "random", "Случайно расположить точки на плоскости", "Случайный список точек");
-	flags.Var(n, 'n', "count", size_t(10), "Количество точек", "Случайный список точек");
+	flags.Var(n, 'n', "count", size_t(7), "Количество точек", "Случайный список точек");
 	flags.Var(maxX, 'x', "maxX", size_t(50), "Максимальная координата по оси абсцисс", "Случайный список точек");
 	flags.Var(maxY, 'y', "maxY", size_t(30), "Максимальная координата по оси ординат", "Случайный список точек");
 
 	flags.Bool(algorythm, 'a', "algorythm", "Посчитать ", "Отладка");
 	flags.Bool(output, 'o', "output", "Вывести все подмножества выборок", "Отладка");
-	flags.Var(k, 'k', "k", size_t(10), "Количество элементов в выборке", "Отладка");
+	flags.Var(k, 'k', "k", size_t(5), "Количество элементов в выборке", "Отладка");
 	flags.Bool(help, 'h', "help", "Показать помощь и выйти");
 
     if (!flags.Parse(argc, argv))
