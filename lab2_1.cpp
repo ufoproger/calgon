@@ -306,7 +306,7 @@ int main(int argc, char *argv[])
 	setlocale(LC_CTYPE, "ru_RU.UTF8");
 
 	std::string filename;
-	bool random, help, output, algorythm;
+	bool random, help, output, algorithm;
  	size_t n, k, maxX, maxY;
 	Flags flags;
 
@@ -316,7 +316,7 @@ int main(int argc, char *argv[])
 	flags.Var(maxX, 'x', "maxX", size_t(50), "Максимальная координата по оси абсцисс", "Случайный список точек");
 	flags.Var(maxY, 'y', "maxY", size_t(30), "Максимальная координата по оси ординат", "Случайный список точек");
 
-	flags.Bool(algorythm, 'a', "algorythm", "Посчитать ", "Отладка");
+	flags.Bool(algorithm, 'a', "algorithm", "Посчитать C_n^k", "Отладка");
 	flags.Bool(output, 'o', "output", "Вывести все подмножества выборок", "Отладка");
 	flags.Var(k, 'k', "k", size_t(5), "Количество элементов в выборке", "Отладка");
 	flags.Bool(help, 'h', "help", "Показать помощь и выйти");
@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
 		return 1;
     }
 
-	if (algorythm)
+	if (algorithm)
 	{
 		std::cout << "Рассчёт c(n, k): " << std::endl;
 
@@ -337,7 +337,7 @@ int main(int argc, char *argv[])
 		std::cout << "c(" << n << ", " << k << ") = " << a.size() << "." << std::endl;
 
 		if (output)
-			std::cout << a << std::endl;
+			std::cout << vv_plus(a) << std::endl;
 
 		return 0;
 	}
@@ -362,13 +362,6 @@ int main(int argc, char *argv[])
 	}
 
 	auto solutions = solve(points);
-
-	for (auto sample: solutions)
-	{
-		std::cout << sample << ", s = " << geronSquare(points[sample[0]], points[sample[1]], points[sample[2]]) << std::endl;
-	}
-
-	std::cout << solutions << std::endl;
 
 	displaySolutions(points, solutions);
 
