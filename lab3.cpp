@@ -105,6 +105,15 @@ public:
 	}
 };
 
+bool is_all_visited(const v &visited)
+{
+	for (auto f: visited)
+		if (!f)
+			return false;
+
+	return true;
+}
+
 template < typename T > v algo_search(const vv &m, size_t start)
 {
 	v visited(m.size(), false);
@@ -118,7 +127,6 @@ template < typename T > v algo_search(const vv &m, size_t start)
 
 	while (!storage.empty())
 	{
-
 		size_t u = storage.get_next();
 
 		if (debug)
@@ -140,6 +148,42 @@ template < typename T > v algo_search(const vv &m, size_t start)
 	return visited;
 }
 
+template < typename T > vv algo_search_spanning(const vv &m, size_t start)
+{
+	const size_t infinity = std::string::npos;
+	const size_t n = m.size();
+
+	vv spanning(n);
+	v visited(n, false), from(n, infinity);
+	T storage;
+
+	storage.push(start);
+	visited[start] = true;
+
+	while (!storage.empty())
+	{
+		size_t u = storage.get_next();
+
+		if (u != start)
+			spanning[u].push_back(from[u]);
+
+		storage.pop();
+
+		for (auto w: m[u])
+			if (!visited[w])
+			{
+				storage.push(w);
+				visited[w] = true;
+				from[w] = u;
+			}
+	}
+
+	if (!is_all_visited(visited))
+		return vv();
+
+	return spanning;
+}
+
 // Поиск в ширину
 inline v bfs(const vv &m, size_t start)
 {
@@ -150,15 +194,6 @@ inline v bfs(const vv &m, size_t start)
 inline v dfs(const vv &m, size_t start)
 {
 	return algo_search<StackStorage>(m, start);
-}
-
-bool is_all_visited(const v &visited)
-{
-	for (auto f: visited)
-		if (!f)
-			return false;
-
-	return true;	
 }
 
 void task1(const vv &m)
@@ -179,13 +214,19 @@ void task2(const vv &m)
 			sources.push_back(i);
 
 	if (sources.empty())
-		std::cout << "Источников орграфа нет" << std::endl;
+		std::cout << "Источников орграфа нет." << std::endl;
 	else
 		std::cout << "Источники орграфа: " << v_plus(sources) << std::endl;
 }
 
 void task3(const vv &m)
 {
+	vv spanning = algo_search_spanning<StackStorage>(m, 0);
+
+	if (spanning.empty())
+		std::cout << "Граф не является связным, поэтому остовное дерево не найдено." << std::endl;
+	else
+		std::cout << "Списки смежности остовного дерева:" << std::endl << vv_plus(spanning, true) << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -197,7 +238,7 @@ int main(int argc, char *argv[])
 	size_t task;
 	Flags flags;
 
-	flags.Var(filename, 'f', "filename", std::string(), "Файл со списком смежности графа");
+	flags.Var(filename, 'f', "filename", std::string(), "Файл со списками смежностей графа");
 	flags.Bool(skipOrientation, 's', "skip-orientation", "Игнорировать ориентацию графа");
 	flags.Var(task, 't', "task", size_t(1), "Подзадача лабораторной работы");
 	flags.Bool(debug, 'd', "debug", "Вывод отладки");
@@ -219,11 +260,11 @@ int main(int argc, char *argv[])
 
 	if (m.empty())
 	{
-		std::cout << "Ошибка чтения матрицы смежности." << std::endl;
+		std::cout << "Ошибка чтения списков смежностей." << std::endl;
 		return 2;
 	}
 
-	std::cout << "Прочитанная матрица смежности: " << std::endl << vv_plus(m, true) << std::endl;
+	std::cout << "Прочитанные списки смежности: " << std::endl << vv_plus(m, true) << std::endl;
 
 	switch (task)
 	{
