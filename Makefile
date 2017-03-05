@@ -9,10 +9,13 @@ lab2_1: lab2_1.cpp
 lab2_2: lab2_2.cpp
 	g++ $(CXXFLAGS) lab2_2.cpp -o lab2_2
 
-lab3: lab2_2.cpp
+lab3: lab3.cpp
 	g++ $(CXXFLAGS) lab3.cpp -o lab3
 
+lab4: lab4.cpp
+	g++ $(CXXFLAGS) lab4.cpp -o lab4
+
 clean:
-	rm -f lab1 lab2_1 lab2_2 lab3
+	rm -f lab1 lab2_1 lab2_2 lab3 lab4 lab5 lab6
 
 .PHONY: clean
