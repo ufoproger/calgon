@@ -77,8 +77,9 @@ class v_edges: public std::vector < edge >
 		}
 };
 
+typedef std::vector < float > v_float;
+typedef std::vector < v_float > vv_float;
 typedef std::vector < size_t > v;
-// typedef std::vector < edge > v_edges;
 typedef std::vector < v > vv;
 typedef std::queue < size_t > queue;
 typedef std::stack < size_t > stack;
@@ -130,12 +131,37 @@ std::ostream& operator<<(std::ostream &out, const v &v)
 	return out;
 }
 
+std::ostream& operator<<(std::ostream &out, const v_float &v)
+{
+	for (auto value: v)
+		out << value << " ";
+
+	return out;
+}
+
 std::ostream& operator<<(std::ostream &out, const vv &a)
 {
 	for (auto v: a)
 		out << v << ::std::endl;
 
 	return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const vv_float &a)
+{
+	for (auto v: a)
+		out << v << ::std::endl;
+
+	return out;
+}
+
+std::istream& operator>>(std::istream &in, vv_float &a)
+{
+	for (auto &row: a)
+		for (auto &element: row)
+			in >> element;
+
+	return in;
 }
 
 std::ostream& operator<<(std::ostream &out, const v_plus &v)

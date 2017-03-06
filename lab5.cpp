@@ -11,89 +11,73 @@
 
 bool debug = false;
 
-v_edges read_from_file(const std::string &filename, bool skipOrientation)
+bool read_from_file(const std::string &filename, vv_float &matrix, size_t &s, size_t &t)
 {
 	std::ifstream fin(filename);
-	v_edges edges;
 
 	if (!fin.is_open())
-		return edges;
+		return false;
 
-	std::string s;
+	matrix.clear();
 
-	while (getline(fin, s))
-	{
-		std::istringstream sin(s);
-		edge e;
+	size_t n;
 
-		sin >> e;
+	fin >> n;
 
-		edges.push_back(e);
+	matrix.resize(n, v_float(n, 0));
 
-		if (skipOrientation)
-		{
-			std::swap(e.from, e.to);
-			edges.push_back(e);
-		}
-	}
+	fin >> matrix >> s >> t;
 
-	return edges;
-}
-
-bool is_all_visited(const v &visited)
-{
-	for (auto f: visited)
-		if (!f)
-			return false;
+	s--;
+	t--;
 
 	return true;
 }
 
-v_edges spanning_tree_prima(const v_edges &edges)
+v dijkstra(const vv_float &matrix, size_t s, size_t t)
 {
-	size_t n = edges.graph_size();
-	v_edges result;
-	v vertexes;
-	edge minEdge = *min_element(edges.begin(), edges.end());
+	const size_t inf = std::string::npos;
+	const size_t n = matrix.size();
 
-	result.push_back(minEdge);
-	vertexes.push_back(minEdge.from);
-	vertexes.push_back(minEdge.to);
+	v path;
+	v d(n, inf);
+	v h(n, 0);
+	v x(n, false);
 
-	for (size_t i = 2; i < n; ++i)
+	d[s] = 0;
+	h[s] = 0;
+	x[s] = true;
+
+	size_t p = s;
+
+	for (size_t j = 0; j < n; ++j)
 	{
-		minEdge = edge();
+		size_t v = matrix[p][j];
 
-		for (auto e: edges)
+		if (d[v] > d[p] + matrix[p][v])
 		{
-			// Нет вершины для этого ребра
-			if (find(vertexes.begin(), vertexes.end(), e.from) == vertexes.end())
-				continue;
-
-			// Образуется цикл
-			if (find(vertexes.begin(), vertexes.end(), e.to) != vertexes.end())
-				continue;
-
-			if (minEdge.empty() || e < minEdge)
-				minEdge = e;
+			d[v] = d[p] + matrix[p][v];
+			h[v] = p;
 		}
 
-		// Граф не связный
-		if (minEdge.empty())
-			return v_edges();
+		size_t minV = inf;
 
-		result.push_back(minEdge);
-		vertexes.push_back(minEdge.to);
-
-		if (debug)
+		for (size_t i = 1; i < n; ++i)
 		{
-			std::cout << "Вершины остовного дерева: " << v_plus(vertexes) << std::endl;
-			std::cout << "Рёбра остовного дерева T_" << (i) << std::endl;
-			std::cout << result << std::endl;
+			if (x[i])
+				continue;
+
+			if (minV == inf || d[i] < d[minV])
+				minV = i;
+
+			x[minV] = true;
 		}
 	}
+}
 
-	return result;
+void task1()
+{
+
 }
 
 int main(int argc, char *argv[])
@@ -101,13 +85,13 @@ int main(int argc, char *argv[])
 	setlocale(LC_CTYPE, "ru_RU.UTF8");
 
 	std::string filename;
-	bool help, skipOrientation = false, rice;
+	bool help;
+	size_t task;
 	Flags flags;
 
 	flags.Var(filename, 'f', "filename", std::string(), "Файл со списком рёбер графа");
+	flags.Var(task, 't', "task", size_t(1), "Подзадача лабораторной работы");
 	flags.Bool(debug, 'd', "debug", "Вывод отладки");
-	flags.Bool(skipOrientation, 's', "skip-orientation", "Игнорировать направление рёбер");
-	flags.Bool(rice, 'r', "rice", "Режим задачи о мелиорации рисовых полей");
 	flags.Bool(help, 'h', "help", "Показать помощь и выйти");
 
 	if (!flags.Parse(argc, argv))
@@ -122,14 +106,21 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	v_edges edges = read_from_file(filename, skipOrientation);
+	vv_float matrix;
+	size_t s, t;
 
-	if (edges.empty())
+	if (!read_from_file(filename, matrix, s, t))
 	{
-		std::cout << "Ошибка чтения рёбер графа." << std::endl;
+		std::cout << "Ошибка матрицы весов орграфа." << std::endl;
 		return 2;
 	}
 
+	std::cout << "Прочитанная матрица весов: " << std::endl << matrix << std::endl;
+	std::cout << "Исходная вершина: " << (s + 1) << std::endl;
+	std::cout << "Конечная вершина: " << (t + 1) << std::endl;
+
+
+/*
 	std::cout << "Количество вершин в графе: " << edges.graph_size() << "." << std::endl;
 	std::cout << "Прочитанный список рёбер графа: " << std::endl << edges << std::endl;
 
@@ -166,8 +157,9 @@ int main(int argc, char *argv[])
 		end = std::remove_if(edges.begin(), edges.end(), &edge::is_not_rise);
 		edges.erase(end, edges.end());
 		std::cout << "Земляные валики, которые необходимо разрушить:" << std::endl << edges << std::endl;
-std::cout << "ves" << edges.weight_sum() << std::endl;
-	}
+	}*/
+
+
 
 	return 0;
 }
