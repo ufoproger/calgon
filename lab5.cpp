@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <type_traits>
+#include <iomanip>
 
 #include "flags.hh/Flags.hh"
 #include "lab2_types.hh"
@@ -40,7 +41,7 @@ v dijkstra(const vv_float &matrix, size_t s, size_t t)
 	const size_t n = matrix.size();
 
 	v path;
-	v d(n, inf);
+	v_float d(n, fInf);
 	v h(n, 0);
 	v x(n, false);
 
@@ -49,17 +50,26 @@ v dijkstra(const vv_float &matrix, size_t s, size_t t)
 	x[s] = true;
 
 	size_t p = s;
+	size_t iteration = 0;
 
-	for (size_t j = 0; j < n; ++j)
+	std::cout << iteration++ << " D " << v_inf(d) << std::endl;
+	std::cout << "  H " << v_plus(h) << std::endl;
+	std::cout << "  X " << x << std::endl;
+	std::cout << std::endl;
+
+	while (p != t)
 	{
-		size_t v = matrix[p][j];
-
-		if (d[v] > d[p] + matrix[p][v])
+		for (size_t j = 0; j < n; ++j)
 		{
-			d[v] = d[p] + matrix[p][v];
-			h[v] = p;
-		}
+			size_t v = matrix[p][j];
 
+			if (d[v] > d[p] + matrix[p][v])
+			{
+				d[v] = d[p] + matrix[p][v];
+				h[v] = p;
+			}
+		}
+	
 		size_t minV = inf;
 
 		for (size_t i = 1; i < n; ++i)
@@ -72,12 +82,23 @@ v dijkstra(const vv_float &matrix, size_t s, size_t t)
 
 			x[minV] = true;
 		}
+
+		p = minV;
+
+		
+	std::cout << iteration++ << " D " << v_inf(d) << std::endl;
+	std::cout << "  H " << v_plus(h) << std::endl;
+	std::cout << "  X " << x << std::endl;
+	std::cout << std::endl;
+
 	}
+
+	return path;
 }
 
-void task1()
+void task1(const vv_float &matrix, const size_t s, const size_t t)
 {
-
+	v path = dijkstra(matrix, s, t);
 }
 
 int main(int argc, char *argv[])
@@ -118,6 +139,13 @@ int main(int argc, char *argv[])
 	std::cout << "Прочитанная матрица весов: " << std::endl << matrix << std::endl;
 	std::cout << "Исходная вершина: " << (s + 1) << std::endl;
 	std::cout << "Конечная вершина: " << (t + 1) << std::endl;
+
+	switch (task)
+	{
+		case 1:
+			task1(matrix, s, t);
+			break;
+	}
 
 
 /*

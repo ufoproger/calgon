@@ -3,6 +3,10 @@
 #include <queue>
 #include <stack>
 #include <cmath>
+#include <string>
+
+const size_t inf = std::string::npos;
+const float fInf = 1e10;
 
 struct edge
 {
@@ -90,6 +94,12 @@ class v_plus: public v
 		v_plus(v _v): v(_v) {}
 };
 
+class v_inf: public v_float
+{
+	public:
+		v_inf(v_float _v): v_float(_v) {}
+};
+
 class vv_plus: public vv
 {
 	public:
@@ -168,6 +178,21 @@ std::ostream& operator<<(std::ostream &out, const v_plus &v)
 {
 	for (auto value: v)
 		out << value + 1 << " ";
+
+	return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const v_inf &v)
+{
+	for (auto value: v)
+	{
+		if (value == fInf)
+			out << "oo";
+		else
+			out << value;
+
+		out << " ";
+	}
 
 	return out;
 }
