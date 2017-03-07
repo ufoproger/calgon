@@ -17,7 +17,7 @@ function changeMatrixSize(e)
 
 		for (var j = 0; j < size; j++)
 		{
-			var $input = $("<input>", {type: "text", name: "a[" + i + "][" + j + "]", class: "form-control", value: (e.data === undefined) ? "" : (e.data.a[i][j] == -1 ? "" : e.data.a[i][j])});
+			var $input = $("<input>", {type: "text", name: "a[" + i + "][" + j + "]", class: "form-control", value: (e.data === undefined) ? "" : (e.data.a[i][j] == 0 ? "" : e.data.a[i][j])});
 			$tr.append($("<td>").append($input));
 		}
 

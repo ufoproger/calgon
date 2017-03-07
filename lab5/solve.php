@@ -103,7 +103,6 @@ class SolverFloyd extends Solver
 
 	public function calc($a, $from, $to)
 	{
-		echo 'dfgdf';	
 	}
 }
 
