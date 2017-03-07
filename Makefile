@@ -16,6 +16,6 @@ lab4: lab4.cpp
 	g++ $(CXXFLAGS) lab4.cpp -o lab4
 
 clean:
-	rm -f lab1 lab2_1 lab2_2 lab3 lab4 lab5 lab6
+	rm -f lab1 lab2_1 lab2_2 lab3 lab4
 
 .PHONY: clean
