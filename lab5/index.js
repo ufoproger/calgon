@@ -1,28 +1,45 @@
 var $graphMatrix, $graphSize, $graphFrom, $graphTo, $graphAlgo;
 
-function changeMatrixSize(e)
-{		
-	if (e === undefined)
-		e = {};
-
-	var size = (e.data === undefined) ? $graphSize.val() : e.data.a.length;
-
-	$graphMatrix.empty();
-
-	var $tr = $("<tr>");
+function buildTable($table, size, name, data)
+{
+	$table.empty();
 
 	for (var i = 0; i < size; i++)
 	{
-		$tr = $("<tr>");
+		var $tr = $("<tr>");
 
 		for (var j = 0; j < size; j++)
 		{
-			var $input = $("<input>", {type: "text", name: "a[" + i + "][" + j + "]", class: "form-control", value: (e.data === undefined) ? "" : (e.data.a[i][j] == 0 ? "" : e.data.a[i][j])});
+			var $input = $("<input>", {
+				type: "text",
+				name: name + "[" + i + "][" + j + "]",
+				class: "form-control",
+				value: (data === undefined) ? "" : (data[i][j] == 0 ? "" : data[i][j])
+			});
+
 			$tr.append($("<td>").append($input));
 		}
 
-		$graphMatrix.append($tr);
+		$table.append($tr);
 	}
+}
+
+function changeMatrixSize(e)
+{
+	if (e === undefined)
+		e = {};
+
+	if (e.data === undefined)
+		e.data = {};
+
+	var size = (e.data.a === undefined) ? $graphSize.val() : e.data.a.length;
+
+	buildTable($graphMatrix, size, "a", e.data.a);
+
+	$("#graph-matrix-b").empty();
+
+	if (e.data.b !== undefined)
+		buildTable($("#graph-matrix-b"), size, "b", e.data.b);
 
 	$graphSize.val(size);
 	$graphFrom.empty();

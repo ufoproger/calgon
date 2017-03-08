@@ -47,8 +47,9 @@ $examples = require_once('examples.php');
 					</select>
 				</div>
 			</div>
-		
-			<table class="table" id="graph-matrix"></table>
+
+			<table class="table table-bordered" id="graph-matrix"></table>
+			<table class="table table-bordered" id="graph-matrix-b"></table>
 			<button type="submit" class="btn btn-primary">Решить</button>
 		</form>
 		<br/>
@@ -60,7 +61,7 @@ $examples = require_once('examples.php');
 			</p>
 		<? endforeach; ?>
 	</div>
-	
+
 	<script src="js/jquery-3.1.1.min.js"></script>
 	<script src="js/tether.min.js"></script>
 	<script src="index.js"></script>
