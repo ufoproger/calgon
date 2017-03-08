@@ -33,7 +33,7 @@ $examples = require_once('examples.php');
 					<div class="form-group col-md-3">
 						<label for="graph-<?= $name ?>"><?= $title ?></label>
 						<select class="form-control" name="<?= $name ?>" id="graph-<?= $name ?>">
-							<? for ($i = 1; $i <= 10; $i++): ?>
+							<? for ($i = 1; $i < 10; $i++): ?>
 								<option value="<?= $i ?>"><?= $i ?></option>
 							<? endfor; ?>
 						</select>
@@ -48,7 +48,9 @@ $examples = require_once('examples.php');
 				</div>
 			</div>
 
+			<p>Матрица весов <var>W</var></p>
 			<table class="table table-bordered" id="graph-matrix"></table>
+			<p id="matrix-b-title" hidden>Вторая матрица весов</p>
 			<table class="table table-bordered" id="graph-matrix-b"></table>
 			<button type="submit" class="btn btn-primary">Решить</button>
 		</form>

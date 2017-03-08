@@ -1,5 +1,7 @@
 <?php
-require_once('solve.php');
+error_reporting(0);
+
+require_once('solver.php');
 
 $fields = ['a', 'from', 'to', 'algo'];
 
@@ -22,11 +24,13 @@ if (isset($_GET['b']))
 	$matrix = Solver::prepareMatrixAB($a, $b);
 }
 else
-{
 	$matrix = Solver::prepareMatrixA($a);
-}
 
 $solver = SolverFactory::create($algo);
+
+if (!$solver)
+	die('Неопознанный алгоритм.');
+
 $solver->calc($matrix, $from - 1, $to - 1);
 
 $options = [
@@ -71,8 +75,15 @@ if ($superTask && !empty($solver->path))
 	}
 
 	if (!empty($pathDescribe))
-		$pathDescribe[] = 'прибыли в город №' . ($path[count($path) - 1] + 1);
+		$pathDescribe[] = 'прибытие в город №' . ($path[count($path) - 1] + 1);
 }
+
+$get = $_GET;
+
+if ($get['algo'] == SolverFactory::ALGO_DIJKSTRA)
+	$get['algo'] = SolverFactory::ALGO_FLOYD;
+else
+	$get['algo'] = SolverFactory::ALGO_DIJKSTRA;
 
 ?>
 <!DOCTYPE html>
@@ -95,8 +106,8 @@ if ($superTask && !empty($solver->path))
 	<body>
 		<div class="container">
 			<div class="starter-template">
-				<h3><a href="index.php">Нахождение кратчайшего пути в графе</a></h3>
-				<p class="lead"><?= $solver->name ?></p>
+				<h3><a href="index.php">Нахождение кратчайшего пути в графе</a> из <?= $from ?> в <?= $to ?></h3>
+				<p class="lead"><?= $solver->name ?> (<a href="solution.php?<?= http_build_query($get) ?>"><?= SolverFactory::getNameByAlgo($get['algo']) ?></a>)</p>
 
 				<? if (empty($solver->path)): ?>
 					<p>Не удалось найти кратчайший путь!</p>
@@ -107,7 +118,7 @@ if ($superTask && !empty($solver->path))
 					<p><?= implode(', ', $pathDescribe) ?></p>
 				<? endif; ?>
 
-				<? if ($algo == "dijkstra"): ?>
+				<? if ($algo == SolverFactory::ALGO_DIJKSTRA): ?>
 
 					<table class="table table-responsiv">
 						<thead class="thead-inverse">

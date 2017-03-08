@@ -13,7 +13,7 @@ function buildTable($table, size, name, data)
 			var $input = $("<input>", {
 				type: "text",
 				name: name + "[" + i + "][" + j + "]",
-				class: "form-control",
+				class: "form-control form-control-sm",
 				value: (data === undefined) ? "" : (data[i][j] == 0 ? "" : data[i][j])
 			});
 
@@ -39,7 +39,12 @@ function changeMatrixSize(e)
 	$("#graph-matrix-b").empty();
 
 	if (e.data.b !== undefined)
+	{
+		$("#matrix-b-title").removeAttr("hidden");
 		buildTable($("#graph-matrix-b"), size, "b", e.data.b);
+	}
+	else
+		$("#matrix-b-title").attr("hidden", "hidden");
 
 	$graphSize.val(size);
 	$graphFrom.empty();
@@ -52,6 +57,8 @@ function changeMatrixSize(e)
 		$graphFrom.append($option.clone());
 		$graphTo.append($option.clone());
 	}
+
+	$graphTo.val(size);
 }
 
 $(function()

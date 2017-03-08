@@ -211,16 +211,26 @@ class SolverFloyd extends Solver
 
 class SolverFactory
 {
+	const ALGO_DIJKSTRA = 'dijkstra';
+	const ALGO_FLOYD = 'floyd';
+
 	private function __construct() {}
+
+	public static function getNameByAlgo($algo)
+	{
+		$solver = self::create($algo);
+
+		return $solver->name;
+	}
 
 	public static function create($algo)
 	{
 		switch ($algo)
 		{
-			case 'dijkstra':
+			case self::ALGO_DIJKSTRA:
 				return new SolverDijkstra;
 
-			case 'floyd':
+			case self::ALGO_FLOYD:
 				return new SolverFloyd;
 		}
 
