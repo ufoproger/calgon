@@ -125,7 +125,7 @@ v_string haffman(v_float p)
 		float mid = (1. - avg / 8.) * 100.;
 		std::cout << "Построенные коды: " << codes << std::endl;
 		std::cout << "l_ср = " << avg << "." << std::endl;
-		std::cout << "К_сж = " << std::fixed << std::setprecision(1) << mid << "%." << std::endl;
+		std::cout << "К_сж = " << mid << "%." << std::endl;
 	}
 
 	return codes;
@@ -206,28 +206,11 @@ void task2(const std::string &filename)
 	for (auto value: pairs)
 		p.push_back((float)value.second / (float)text.size());
 
-	if (debug)
-	{
-		std::cout << "Частота встречаемости символов в тексте: " << std::endl;
-
-		size_t i = 0;
-
-		for (auto value: pairs)
-		{
-			if (value.first == 10)
-				std::cout << "[Enter]";
-			else
-				std::cout << "    \"" << decode(value.first) << "\"";
-
-			std::cout << " - " << value.second << "(" << p[i++] << ")" << std::endl;
-		}
-	}
-
 	auto codes = haffman(p);
 
 	if (debug)
 	{
-		std::cout << "Построенные коды: " << std::endl;
+		std::cout << "Частота встречаемости символов в тексте: " << std::endl;
 
 		for (size_t i = 0; i < pairs.size(); ++i)
 		{
@@ -236,25 +219,23 @@ void task2(const std::string &filename)
 			else
 				std::cout << "    \"" << decode(pairs[i].first) << "\"";
 
-			std::cout << " - " <<  codes[i] << std::endl;
+			std::cout << " - " << pairs[i].second << " (" << p[i] << ") = " << codes[i] << std::endl;
 		}
-
-		std::cout << "l_ср = " << codes_l_average(p, codes) << "." << std::endl;
 	}
 
-	std::string textCodes;
+	text = "";
 
 	for (auto ch: textOriginal)
 		for (size_t i = 0; i < pairs.size(); ++i)
 			if (pairs[i].first == ch)
 			{
-				textCodes.append(codes[i]);
+				text.append(codes[i]);
 				break;
 			}
 
-	std::cout << "Закодированный текст: " << std::endl << textCodes << std::endl;
-	std::cout << "Исходный размер текста: " << (text.size() * 8) << " бит." << std::endl;
-	std::cout << "Размер закодированного текста: " << textCodes.size() << " бит." << std::endl;
+	std::cout << "Закодированный текст: " << std::endl << text << std::endl;
+	std::cout << "Исходный размер текста: " << (textOriginal.size() * 8) << " бит." << std::endl;
+	std::cout << "Размер закодированного текста: " << text.size() << " бит." << std::endl;
 }
 
 int main(int argc, char *argv[])
