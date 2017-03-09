@@ -81,6 +81,7 @@ class v_edges: public std::vector < edge >
 		}
 };
 
+typedef std::vector < std::string > v_string;
 typedef std::vector < float > v_float;
 typedef std::vector < v_float > vv_float;
 typedef std::vector < size_t > v;
@@ -134,6 +135,14 @@ std::ostream& operator<<(std::ostream &out, const v_edges &v)
 }
 
 std::ostream& operator<<(std::ostream &out, const v &v)
+{
+	for (auto value: v)
+		out << value << " ";
+
+	return out;
+}
+
+std::ostream& operator<<(std::ostream &out, const v_string &v)
 {
 	for (auto value: v)
 		out << value << " ";
