@@ -1,4 +1,4 @@
-CXXFLAGS=-Wall -g -std=c++0x
+CXXFLAGS=-Wall -g -std=c++0x -fpermissive
 
 lab1: lab1.cpp
 	g++ $(CXXFLAGS) lab1.cpp `pkg-config --libs ncursesw` -o lab1
